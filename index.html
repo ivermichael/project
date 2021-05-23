@@ -1,14 +1,76 @@
-<body>
-  <h1> My webpage </h1>
-    <p>Welcome to my webpage!</p> <br>
-    At this webpage I will,
-    <ol>
-      <li>Do stuff</li>
-      <li>Show things </li>
-      <li>etc. </li>
-    </ol>  
-    <p>seems cool</p>
-    <adress>
-      Michael Iversen
-  </adress>
-</body>
+<html lang="en">
+<head>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@3.2.1"></script>
+</head>
+
+<div id='myDiv'>
+<canvas id='myCanvas' width='500' height='500' style="border:1px solid #000000;"></canvas>
+</div>
+<script>
+  var canvas = document.getElementById('myCanvas')
+  var ctx = canvas.getContext('2d')
+
+  positions = initial_positions('grid')
+  velocities = initial_velocities('random')
+
+  var step = 0
+  function animation_step(){
+    /* Clear canvas */
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    /* Update circles */
+    draw_circles(positions)
+    positions = update_positions(positions, velocities)
+    /* Increment step counter and call next animation step*/
+    step++
+    if (step<100){
+      requestAnimationFrame(animation_step)
+    }
+  }
+  function draw_circles(positions){
+    for (i=0; i<positions.length; i++){
+      draw_single_circle(positions[i][0], positions[i][1], 10)
+    }
+  }
+  function draw_single_circle(x, y, r){
+    ctx.beginPath()
+    ctx.arc(x, y, r, 0, 2*Math.PI);
+    ctx.stroke();
+  }
+  function initial_positions(structure){
+    var positions = []
+    if (structure=='grid'){
+      for (x=25; x<=500; x=x+50){
+        for (y=25; y<=500; y=y+50){
+          positions.push([x, y])
+        }
+      }
+    }
+    if (structure=='random') {
+      N = 100
+      for (counter=0; counter<=N; counter++){
+        positions.push([25+450*Math.random(), 25+450*Math.random()])
+      }
+    }
+    return positions
+}
+  function initial_velocities(){
+    velocities = []
+    N = 100
+    for (counter=0; counter<=N; counter++){
+      velocities.push([Math.random()-0.5, Math.random()-0.5])
+    }
+    return velocities
+  }
+  function update_positions(positions, velocities){
+    new_positions = []
+    for (idx=0; idx<positions.length; idx++){
+      new_positions.push([positions[idx][0] + velocities[idx][0], positions[idx][1] + velocities[idx][1]])
+    }
+    return new_positions
+  }
+  requestAnimationFrame(animation_step)
+
+</script>
+
+
+</html> 
